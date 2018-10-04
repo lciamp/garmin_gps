@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <title>Lou's Run</title>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 75%;
+        width: 50%;
+        border-color: black;
+        border-style: solid;
+        border-width: thin;
+        border-radius: 5px;
+        float: left;
+      }
+      #other {
+        height: 60%;
+        width: 49%;
+        float:  right;
+      }
+      #title {
+        padding-left: 10px;
+  
+      }
+      #time {
+        padding-left: 40px;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 32px;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div id="other">
+      <h1 id="title">Brooklyn Half 2018</h1>
+      <div id="time">
+        distance: {{distance}} mi
+      </div>
+      <div id="time">
+        time: {{time}}
+      </div>
+      <div id="time">
+        pace: {{pace}} min/mi
+      </div>
+    </div>
+    <script>
+
+      // This example creates a 2-pixel-wide red polyline showing the path of
+      // the first trans-Pacific flight between Oakland, CA, and Brisbane,
+      // Australia which was made by Charles Kingsford Smith.
+
+      function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+         
+          center: {{center | safe}},
+          styles: [
+    {
+        "featureType": "landscape.natural",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "color": "#e0efef"
+            }
+        ]
+    },
+    {
+        "featureType": "poi",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "hue": "#1900ff"
+            },
+            {
+                "color": "#c8ffaf"
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "lightness": 100
+            },
+            {
+                "visibility": "simplified"
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "elementType": "labels",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "transit.line",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "lightness": 700
+            }
+        ]
+    },
+    {
+        "featureType": "water",
+        "elementType": "all",
+        "stylers": [
+            {
+                "color": "#7dcdcd"
+            }
+        ]
+    }
+]
+        });
+
+        
+
+        
+        var marker = new google.maps.Marker({
+          position: {{track[0]|safe}},
+          map: map,
+          title: 'Start'
+        });
+        marker.setIcon('{{ url_for('static', filename='green-dot-round3.png') }}')
+        var marker = new google.maps.Marker({
+          position: {{track[-1]|safe}},
+          map: map,
+          title: 'Finish'
+        });
+        marker.setIcon('{{ url_for('static', filename='red-dot-round3.png') }}')
+        
+
+        var flightPlanCoordinates = {{track|safe}};
+
+
+        var flightPath = new google.maps.Polyline({
+          path: flightPlanCoordinates,
+          geodesic: true,
+          strokeColor: '#00BFFF',
+          strokeOpacity: 1.0,
+          strokeWeight: 2,
+          zIndex: 3,
+        });
+        var flightPath2 = new google.maps.Polyline({
+          path: flightPlanCoordinates,
+          geodesic: true,
+          strokeColor: '#ff1493',
+          strokeOpacity: 1.0,
+          strokeWeight: 6,
+          zIndex: 1,
+        });
+
+        flightPath.setMap(map);
+        flightPath2.setMap(map);
+
+
+        map.fitBounds(new google.maps.LatLngBounds(
+          new google.maps.LatLng({{ bounds[0] }}, {{ bounds[1] }}),
+          new google.maps.LatLng({{ bounds[2] }},{{ bounds[3] }})
+        ));
+        
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7tygbkOvRGTm7m8lo2L57elGX51RR-eU&callback=initMap">
+    </script>
+  </body>
+</html>

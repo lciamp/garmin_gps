@@ -1,0 +1,26 @@
+
+
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <script src="https://cdn-webgl.wrld3d.com/wrldjs/dist/latest/wrld.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.css" rel="stylesheet" />
+  </head>
+  
+  <body>
+  <div style="position: relative">
+    <div id="map" style="height: 800px"></div>
+    <script>
+      var map = L.Wrld.map("map", "fc474e4592ea5eceda42b6bdb9e06619", {
+        center: {{center}},
+        zoom: 17
+      });
+
+      var polylinePoints = {{track}};            
+      
+      var polyline = L.polyline(polylinePoints).addTo(map);      
+    </script>
+  </div>
+  </body>
+</html>
+
