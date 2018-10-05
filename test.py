@@ -27,24 +27,31 @@ app.config['SECRET_KEY'] = 'ajhdsfglasdflj'
 
 file = app.config['UPLOAD_FOLDER'] + Brooklyn
 
-
+'''
 myFile = GarminParser(file)
 track = myFile.points
 center = myFile.center
 total_time = myFile.total_time
 distance = myFile.distance_total
 pace = myFile.pace
+'''
 
-
-@app.route('/')
-def index():
+@app.route('/<file>')
+def index(file):
+    file = app.config['UPLOAD_FOLDER'] + file
+    myFile = GarminParser(file)
+    track = myFile.points
+    center = myFile.center
+    total_time = myFile.total_time
+    distance = myFile.distance_total
+    pace = myFile.pace
     return render_template('index.html',
                            track=track,
-                           center=myFile.center,
+                           center=center,
+                           total_time=total_time,
+                           distance=distance,
                            bounds=myFile.bounds,
-                           time=total_time,
-                           pace=pace,
-                           distance=distance)
+                           pace=pace)
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -55,9 +62,9 @@ def upload():
         f = form.file.data
         filename = secure_filename(f.filename)
         print(filename)
-        f.save(os.path.join('./files/', filename
-        ))
-        return redirect(url_for('index'))
+        f.save(os.path.join('./files/', filename))
+
+        return redirect(url_for('index', file=f.filename))
 
     return render_template('upload.html', form=form)
 
